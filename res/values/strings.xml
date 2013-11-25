@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Sup!</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="profilepic">profilepic</string>
+    <string name="title_activity_chat">ChatActivity</string>
+    <string name="reg_mobile">Register your mobile</string>
+    <string name="refresh">Refresh Phone Contacts</string>
+    <string name="refreshReg">Refresh Registered Contacts</string>
+    <string name="register">Register</string>
+    <string name="defaultServer">        http://cs-server.usc.edu:39112/ChatServer/</string>
+
+    <string-array name="serverList">
+        <item>http://192.168.0.30:9090/ChatServer/</item>
+        <item>http://cs-server.usc.edu:39112/ChatServer/</item>
+    </string-array>
+    <string-array name="serverNameList">
+        <item>Local Server</item>
+        <item>cs-server.usc.edu</item>
+    </string-array>
+
+    <string name="title_activity_preference">PreferenceActivity</string>
+    <string name="title_activity_chat_fragment">ChatFragmentActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_section1">Chat</string>
+    <string name="title_section2">Game</string>
+
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory>
+        <ListPreference
+            android:enabled="true"
+            android:entryValues="@array/serverList"
+            android:key="chatserver"
+            android:selectable="true"
+            android:summary="Specify the server"
+            android:title="Chat Server" android:entries="@array/serverNameList" android:defaultValue="@string/defaultServer"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

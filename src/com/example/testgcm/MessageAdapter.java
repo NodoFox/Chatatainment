@@ -32,34 +32,36 @@ public class MessageAdapter extends BaseAdapter {
 		Message message = msg.get(position);
 		ViewHolder holder;
 		holder = new ViewHolder();
-		if (message.getIsMine() == true){
+		if(Message.Types.NEW_GAME_REQUEST.equals(message.getType())){
 			convertView = LayoutInflater.from(context).inflate(
-					R.layout.message_row_me, parent, false);		
-			
-		}
-		else{
-			convertView = LayoutInflater.from(context).inflate(
-					R.layout.message_row_other, parent, false);			
-		}
-		holder.message = (TextView) convertView.findViewById(R.id.message_text);
-		holder.time = (TextView) convertView.findViewById(R.id.time_text);
-		holder.dateDisplay = (TextView) convertView.findViewById(R.id.date_display);
-		String messageDate = Utils.dateForChat.format(message.getTimestamp());
-		if (position==0 || !messageDate.equals(currentDateToDisplay)) {
-			holder.dateDisplay.setText(messageDate);
-			currentDateToDisplay = messageDate;
-			holder.dateDisplay.setVisibility(View.VISIBLE);
+					R.layout.message_notification, parent, false);
 		}else{
-			holder.dateDisplay.setVisibility(View.GONE);
+			
+			if (message.getIsMine() == true){
+				convertView = LayoutInflater.from(context).inflate(
+						R.layout.message_row_me, parent, false);
+			}
+			else{
+				convertView = LayoutInflater.from(context).inflate(
+						R.layout.message_row_other, parent, false);			
+			}
+			holder.message = (TextView) convertView.findViewById(R.id.message_text);
+			holder.time = (TextView) convertView.findViewById(R.id.time_text);
+			holder.dateDisplay = (TextView) convertView.findViewById(R.id.date_display);
+			String messageDate = Utils.dateForChat.format(message.getTimestamp());
+			if (position==0 || !messageDate.equals(currentDateToDisplay)) {
+				holder.dateDisplay.setText(messageDate);
+				currentDateToDisplay = messageDate;
+				holder.dateDisplay.setVisibility(View.VISIBLE);
+			}else{
+				holder.dateDisplay.setVisibility(View.GONE);
+			}
+			holder.message.setText(message.getMsg());
+			SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a",
+					Locale.getDefault());
+			holder.time.setText(formatter.format(message.getTimestamp()));
 		}
 		convertView.setTag(holder);
-
-		holder.message.setText(message.getMsg());
-		SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a",
-				Locale.getDefault());
-
-		holder.time.setText(formatter.format(message.getTimestamp()));
-
 		return convertView;
 	}
 

@@ -1,5 +1,7 @@
 package com.example.testgcm;
 
+import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.Locale;
 
 import android.app.ActionBar;
@@ -12,9 +14,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ChatFragmentActivity extends FragmentActivity implements
 		ActionBar.TabListener {
@@ -33,12 +39,15 @@ public class ChatFragmentActivity extends FragmentActivity implements
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	ViewPager mViewPager;
+	private ChatFragment chatFragment = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat_fragment);
 
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -73,13 +82,54 @@ public class ChatFragmentActivity extends FragmentActivity implements
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
+		getOverflowMenu();
+	}
+	
+	
+	private void getOverflowMenu() {
+	     try {
+	        ViewConfiguration config = ViewConfiguration.get(this);
+	        Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+	        if(menuKeyField != null) {
+	            menuKeyField.setAccessible(true);
+	            menuKeyField.setBoolean(config, false);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.chat, menu);
+		getMenuInflater().inflate(R.menu.activity_chat, menu);
 		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	    case R.id.new_game:
+	        Toast.makeText(this, "hello", Toast.LENGTH_LONG).show();
+	        startNewGame();
+	        return true;
+	    default:
+	        return super.onOptionsItemSelected(item);
+	    }
+	}
+	
+	private void startNewGame(){
+		//TODO check if there is ongoing game
+		Message msg2Send = new Message();
+		msg2Send.setFrom(chatFragment.getMyNumber());
+		msg2Send.setTo(chatFragment.getUserNumber());
+		msg2Send.setIsMine(true);
+		msg2Send.setMsg("");
+		msg2Send.setTimestamp(new Date());
+		msg2Send.setType(Message.Types.NEW_GAME_REQUEST);
+		chatFragment.addNewMessage(msg2Send);
+		chatFragment.new SendMessageTask().execute(msg2Send);
 	}
 
 	@Override
@@ -118,6 +168,7 @@ public class ChatFragmentActivity extends FragmentActivity implements
 			Fragment fragment = null;
 			if (position == 0) {
 				fragment = new ChatFragment();
+				chatFragment = (ChatFragment)fragment;
 			} else {
 				fragment = new DummySectionFragment();
 				Bundle args = new Bundle();

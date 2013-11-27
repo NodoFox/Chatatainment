@@ -16,7 +16,21 @@ public class Message implements Serializable{
 	private Boolean delivered;
 	private Boolean sent;
 	private Boolean isMine;
+	private String type;
 	
+	public static class Types{
+		public static String NEW_GAME_REQUEST = "new_game_request";
+	}
+	
+	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public Message(){
 		isMine = false;
 		delivered = false;

@@ -50,7 +50,6 @@ public class ChatFragment extends Fragment {
 			Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		fragmentView = inflater.inflate(R.layout.chat_layout, container, false);
-
 		parentActivity = getActivity();
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(getActivity());
@@ -91,9 +90,6 @@ public class ChatFragment extends Fragment {
 				msg2Send.setTimestamp(new Date());
 				addNewMessage(msg2Send);
 				new SendMessageTask().execute(msg2Send);
-				// ((ChatActivity) v.getContext()).addNewMessage(new
-				// Message(text,
-				// new Date(), true));
 			}
 		});
 
@@ -106,6 +102,22 @@ public class ChatFragment extends Fragment {
 	// getMenuInflater().inflate(R.menu.activity_chat, menu);
 	// return true;
 	// }
+
+	public String getMyNumber() {
+		return myNumber;
+	}
+
+	public void setMyNumber(String myNumber) {
+		this.myNumber = myNumber;
+	}
+
+	public String getUserNumber() {
+		return userNumber;
+	}
+
+	public void setUserNumber(String userNumber) {
+		this.userNumber = userNumber;
+	}
 
 	void addNewMessage(Message m) {
 		messages.add(m);
@@ -122,14 +134,12 @@ public class ChatFragment extends Fragment {
 
 	@Override
 	public void onStart() {
-		Log.d("CHATSERVER", "Inside onStart()");
 		// TODO Auto-generated method stub
 		super.onStart();
 	}
 
 	@Override
 	public void onResume() {
-		Log.d("CHATSERVER", "Inside onResume()");
 		isActive = true;
 		parentActivity.registerReceiver(messageReceiver, new IntentFilter(
 				"com.example.testgcm.Message"));
@@ -138,7 +148,6 @@ public class ChatFragment extends Fragment {
 
 	@Override
 	public void onPause() {
-		Log.d("CHATSERVER", "Inside onPause()");
 		isActive = false;
 		parentActivity.unregisterReceiver(messageReceiver);
 		super.onPause();
@@ -146,7 +155,6 @@ public class ChatFragment extends Fragment {
 
 	@Override
 	public void onDestroy() {
-		Log.d("CHATSERVER", "Inside onDestroy()");
 		ds.close();
 		dsForRead.close();
 		super.onDestroy();
@@ -174,8 +182,7 @@ public class ChatFragment extends Fragment {
 
 	}
 
-	private class SendMessageTask extends AsyncTask<Message, Void, String> {
-
+	public class SendMessageTask extends AsyncTask<Message, Void, String> {
 		private Message message = null;
 
 		@Override
@@ -187,6 +194,7 @@ public class ChatFragment extends Fragment {
 					sendMsgObj.put("msg", obj[0].getMsg());
 					sendMsgObj.put("from", obj[0].getFrom());
 					sendMsgObj.put("to", obj[0].getTo());
+					sendMsgObj.put("type", obj[0].getType());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -194,8 +202,16 @@ public class ChatFragment extends Fragment {
 				message.setIsMine(true);
 				message.setSent(true);
 				ds.saveMessage(message);
-				JSONObject resObj = new JSONObject(Utils.sendToServer(
-						sendMsgObj, "SendMessage"));
+				JSONObject resObj = null;
+				if(Message.Types.NEW_GAME_REQUEST.equals(message.getType())){
+					//TODO Send new game request to server
+					resObj = new JSONObject(Utils.sendToServer(
+							sendMsgObj, "SendMessage"));
+				}else{
+					resObj = new JSONObject(Utils.sendToServer(
+							sendMsgObj, "SendMessage"));					
+				}
+				
 			} catch (Exception e) {
 				Log.e("CHATSERVER", "" + e.getMessage());
 			} finally {

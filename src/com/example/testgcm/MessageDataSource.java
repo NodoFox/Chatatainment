@@ -61,6 +61,7 @@ public class MessageDataSource {
 		values.put("delivered", message.getDelivered() == true ? 1 : 0);
 		values.put("timestamp",
 				dateFormatISO8601.format(message.getTimestamp()));
+		values.put("type",message.getType());
 		long msgId = database.insert("message", null, values);
 		message.setId(msgId);
 		return message;
@@ -81,6 +82,7 @@ public class MessageDataSource {
 			msg.setId(cursor.getLong(0));
 			msg.setFrom(cursor.getString(1));
 			msg.setTo(cursor.getString(2));
+			msg.setType(cursor.getString(7));
 			try {
 				msg.setTimestamp(dateFormatISO8601.parse(cursor.getString(3)));
 			} catch (Exception e) {

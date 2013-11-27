@@ -55,6 +55,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		message.setMsg(bundle.getString("msg"));
 		message.setFrom(bundle.getString("msg_from"));
 		message.setTo(bundle.getString("msg_to"));
+		message.setType(bundle.getString("msg_type"));
 		message.setIsMine(false);
 		try {
 			message.setTimestamp(Utils.dateFormatISO8601.parse(bundle

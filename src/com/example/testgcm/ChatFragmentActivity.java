@@ -40,6 +40,7 @@ public class ChatFragmentActivity extends FragmentActivity implements
 	 */
 	ViewPager mViewPager;
 	private ChatFragment chatFragment = null;
+	private GameFragment gameFragment = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -169,12 +170,9 @@ public class ChatFragmentActivity extends FragmentActivity implements
 			if (position == 0) {
 				fragment = new ChatFragment();
 				chatFragment = (ChatFragment)fragment;
-			} else {
-				fragment = new DummySectionFragment();
-				Bundle args = new Bundle();
-				args.putInt(DummySectionFragment.ARG_SECTION_NUMBER,
-						position + 1);
-				fragment.setArguments(args);
+			}else{
+				fragment = new GameFragment();
+				gameFragment = (GameFragment)fragment;
 			}
 			return fragment;
 		}

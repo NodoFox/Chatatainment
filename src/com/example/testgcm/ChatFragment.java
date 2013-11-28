@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.chatatainment.database.MessageDataSource;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;

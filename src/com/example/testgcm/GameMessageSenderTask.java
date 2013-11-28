@@ -1,13 +1,11 @@
 package com.example.testgcm;
 
-import java.util.Date;
-
 import org.json.JSONObject;
-
-import com.chatatainment.game.TicTacToe;
 
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.chatatainment.game.TicTacToe;
 
 public class GameMessageSenderTask extends
 		AsyncTask<TicTacToe.Move, Void, String> {

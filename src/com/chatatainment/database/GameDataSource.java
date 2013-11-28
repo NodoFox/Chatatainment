@@ -1,6 +1,7 @@
-package com.example.testgcm;
+package com.chatatainment.database;
 
 import org.json.JSONObject;
+
 
 import android.content.ContentValues;
 import android.content.Context;

@@ -1,8 +1,10 @@
-package com.example.testgcm;
+package com.chatatainment.database;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
+
+import com.example.testgcm.Message;
 
 import android.content.ContentValues;
 import android.content.Context;

@@ -13,11 +13,16 @@ import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.chatatainment.database.GameDataSource;
+import com.chatatainment.database.GameDatabaseOperations;
+import com.chatatainment.database.MessageDataSource;
+import com.chatatainment.database.UsersDataSource;
 import com.chatatainment.game.TicTacToe;
 import com.google.android.gcm.GCMBaseIntentService;
 
 public class GCMIntentService extends GCMBaseIntentService {
 	MessageDataSource ds;
+	GameDataSource gdsForWrite;
 	private SoundPool soundPool;
 	private Boolean soundLoaded = false;
 	private int soundId;
@@ -31,6 +36,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 	public void onCreate() {
 		ds = new MessageDataSource(this);
 		ds.open();
+		gdsForWrite = new GameDataSource(this);
+		gdsForWrite.open();
 		soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
 		soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
 			@Override
@@ -46,13 +53,14 @@ public class GCMIntentService extends GCMBaseIntentService {
 	@Override
 	public void onDestroy() {
 		ds.close();
+		gdsForWrite.close();
 	};
 
 	@Override
 	protected void onMessage(Context context, Intent intent) {
 		Log.d("CHAT_APP", "message received");
 		Bundle bundle = intent.getExtras();
-		if(Message.Types.GAME_MOVE.equals(bundle.getString("msg_type"))){
+		if (Message.Types.GAME_MOVE.equals(bundle.getString("msg_type"))) {
 			processGameMessage(bundle);
 			return;
 		}
@@ -113,19 +121,23 @@ public class GCMIntentService extends GCMBaseIntentService {
 		msgIntent.putExtra("msg", (String) bundle.get("msg"));
 		sendBroadcast(msgIntent);
 	}
-	
-	private void processGameMessage(Bundle bundle){
-		
+
+	private void processGameMessage(Bundle bundle) {
 		TicTacToe.Move move = new TicTacToe.Move();
 		move.setTurn(Integer.parseInt(bundle.getString("msg_turn")));
 		move.setX(Integer.parseInt(bundle.getString("msg_x")));
 		move.setY(Integer.parseInt(bundle.getString("msg_y")));
 		move.setFrom(bundle.getString("msg_from"));
 		move.setTo(bundle.getString("msg_to"));
-		Log.d("CHAT_APP","Game message received : "+move);
+		Log.d("CHAT_APP", "Game message received : " + move);
+		TicTacToe ticTacToeGame = new TicTacToe();
+		GameDatabaseOperations.loadGameStateFromDatabase(ticTacToeGame, move.getFrom(), gdsForWrite);
+		ticTacToeGame.makeMove(move.getX(), move.getY());
+		ticTacToeGame.setMyTurn(true);
+		GameDatabaseOperations.saveGameStateToDatabase(ticTacToeGame, move.getFrom(), gdsForWrite);
 		Intent msgIntent = new Intent();
 		msgIntent.setAction("com.example.testgcm.GameMove");
-		msgIntent.putExtra("move",move);
+		msgIntent.putExtra("move", move);
 		sendBroadcast(msgIntent);
 	}
 
@@ -143,7 +155,5 @@ public class GCMIntentService extends GCMBaseIntentService {
 		System.out.println("Unregistered ID: " + regId);
 
 	}
-	
-
 
 }

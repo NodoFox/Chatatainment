@@ -1,7 +1,9 @@
-package com.example.testgcm;
+package com.chatatainment.database;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.example.testgcm.User;
 
 import android.content.ContentValues;
 import android.content.Context;

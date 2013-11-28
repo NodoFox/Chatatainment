@@ -5,75 +5,18 @@ import java.io.Serializable;
 public class TicTacToe {
 	private int[][] state;
 	private int nextTurn;
-
 	public static int STATE_O = 0;
 	public static int STATE_X = 1;
 	public static int STATE_EMPTY = -1;
 	public static int STATE_GAME_DRAW = -2;
+	private boolean isMyTurn;
+	
+	public boolean isMyTurn() {
+		return isMyTurn;
+	}
 
-	public static class Move implements Serializable{
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 6241266743610859093L;
-		private int x;
-		private int y;
-		private int turn;
-
-		private String to;
-		private String from;
-		@Override
-		public String toString(){
-			return "turn:"+turn+":"+x+":"+y;
-		}
-		
-		public Move(){};
-
-		public String getTo() {
-			return to;
-		}
-
-		public void setTo(String to) {
-			this.to = to;
-		}
-
-		public String getFrom() {
-			return from;
-		}
-
-		public void setFrom(String from) {
-			this.from = from;
-		}
-
-		public int getX() {
-			return x;
-		}
-
-		public void setX(int x) {
-			this.x = x;
-		}
-
-		public int getY() {
-			return y;
-		}
-
-		public void setY(int y) {
-			this.y = y;
-		}
-
-		public int getTurn() {
-			return turn;
-		}
-
-		public void setTurn(int turn) {
-			this.turn = turn;
-		}
-
-		public Move(int turn, int x, int y) {
-			this.turn = turn;
-			this.x = x;
-			this.y = y;
-		}
+	public void setMyTurn(boolean isMyTurn) {
+		this.isMyTurn = isMyTurn;
 	}
 
 	public int getNextTurn() {
@@ -201,4 +144,70 @@ public class TicTacToe {
 	// System.out.println(t);
 	// System.out.println(t.getWinner());
 	// }
+	
+	public static class Move implements Serializable{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 6241266743610859093L;
+		private int x;
+		private int y;
+		private int turn;
+		
+
+		private String to;
+		private String from;
+		@Override
+		public String toString(){
+			return "turn:"+turn+":"+x+":"+y;
+		}
+		
+		public Move(){};
+
+		public String getTo() {
+			return to;
+		}
+
+		public void setTo(String to) {
+			this.to = to;
+		}
+
+		public String getFrom() {
+			return from;
+		}
+
+		public void setFrom(String from) {
+			this.from = from;
+		}
+
+		public int getX() {
+			return x;
+		}
+
+		public void setX(int x) {
+			this.x = x;
+		}
+
+		public int getY() {
+			return y;
+		}
+
+		public void setY(int y) {
+			this.y = y;
+		}
+
+		public int getTurn() {
+			return turn;
+		}
+
+		public void setTurn(int turn) {
+			this.turn = turn;
+		}
+
+		public Move(int turn, int x, int y) {
+			this.turn = turn;
+			this.x = x;
+			this.y = y;
+		}
+	}
 }

@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.Locale;
 
+import com.chatatainment.game.TicTacToe;
+
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
@@ -173,6 +175,7 @@ public class ChatFragmentActivity extends FragmentActivity implements
 			}else{
 				fragment = new GameFragment();
 				gameFragment = (GameFragment)fragment;
+				gameFragment.setMyState(TicTacToe.STATE_X);
 			}
 			return fragment;
 		}

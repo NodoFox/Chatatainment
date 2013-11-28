@@ -1,5 +1,7 @@
 package com.chatatainment.game;
 
+import java.io.Serializable;
+
 public class TicTacToe {
 	private int[][] state;
 	private int nextTurn;
@@ -8,6 +10,79 @@ public class TicTacToe {
 	public static int STATE_X = 1;
 	public static int STATE_EMPTY = -1;
 	public static int STATE_GAME_DRAW = -2;
+
+	public static class Move implements Serializable{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 6241266743610859093L;
+		private int x;
+		private int y;
+		private int turn;
+
+		private String to;
+		private String from;
+		@Override
+		public String toString(){
+			return "turn:"+turn+":"+x+":"+y;
+		}
+		
+		public Move(){};
+
+		public String getTo() {
+			return to;
+		}
+
+		public void setTo(String to) {
+			this.to = to;
+		}
+
+		public String getFrom() {
+			return from;
+		}
+
+		public void setFrom(String from) {
+			this.from = from;
+		}
+
+		public int getX() {
+			return x;
+		}
+
+		public void setX(int x) {
+			this.x = x;
+		}
+
+		public int getY() {
+			return y;
+		}
+
+		public void setY(int y) {
+			this.y = y;
+		}
+
+		public int getTurn() {
+			return turn;
+		}
+
+		public void setTurn(int turn) {
+			this.turn = turn;
+		}
+
+		public Move(int turn, int x, int y) {
+			this.turn = turn;
+			this.x = x;
+			this.y = y;
+		}
+	}
+
+	public int getNextTurn() {
+		return nextTurn;
+	}
+
+	public void setNextTurn(int nextTurn) {
+		this.nextTurn = nextTurn;
+	}
 
 	public TicTacToe() {
 		state = new int[3][3];
@@ -24,7 +99,7 @@ public class TicTacToe {
 	}
 
 	public int getWinner() {
-		if(checkIfGameDraw()){
+		if (checkIfGameDraw()) {
 			return STATE_GAME_DRAW;
 		}
 		if (checkIfPlayerWins(STATE_X)) {
@@ -35,11 +110,11 @@ public class TicTacToe {
 			return STATE_EMPTY;
 		}
 	}
-	
-	private boolean checkIfGameDraw(){
+
+	private boolean checkIfGameDraw() {
 		for (int i = 0; i < state.length; i++) {
 			for (int j = 0; j < state[i].length; j++) {
-				if(state[i][j] == STATE_EMPTY){
+				if (state[i][j] == STATE_EMPTY) {
 					return false;
 				}
 			}
@@ -89,7 +164,7 @@ public class TicTacToe {
 		}
 		return false;
 	}
-	
+
 	public boolean makeMove(int x, int y) {
 		if (state[x][y] == STATE_EMPTY) {
 			state[x][y] = nextTurn;
@@ -119,11 +194,11 @@ public class TicTacToe {
 		return sb.toString();
 	}
 
-//	public static void main(String args[]) {
-//		TicTacToe t = new TicTacToe();
-//		int[][] state = { { 0, 0, -1 }, { 1, 0, 0 }, { 1, -1, 0 } };
-//		t.setState(state);
-//		System.out.println(t);
-//		System.out.println(t.getWinner());
-//	}
+	// public static void main(String args[]) {
+	// TicTacToe t = new TicTacToe();
+	// int[][] state = { { 0, 0, -1 }, { 1, 0, 0 }, { 1, -1, 0 } };
+	// t.setState(state);
+	// System.out.println(t);
+	// System.out.println(t.getWinner());
+	// }
 }

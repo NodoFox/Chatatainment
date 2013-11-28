@@ -20,6 +20,8 @@ public class Message implements Serializable{
 	
 	public static class Types{
 		public static String NEW_GAME_REQUEST = "new_game_request";
+		public static String NEW_GAME_REQUEST_RECEIVE = "new_game_request_received";
+		public static String GAME_MOVE = "game_move";
 	}
 	
 	

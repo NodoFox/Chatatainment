@@ -6,17 +6,17 @@
 
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="16" />
+        android:targetSdkVersion="19" />
 
     <permission
         android:name="com.example.testgcm.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
-
+	<!-- GCM connects to Google Services. -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.example.testgcm.permission.C2D_MESSAGE" />
     <!-- App receives GCM messages. -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <!-- GCM connects to Google Services. -->
-    <uses-permission android:name="android.permission.INTERNET" />
+    
     <!-- GCM requires a Google account. -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <!-- Keeps the processor from sleeping when a message is received. -->

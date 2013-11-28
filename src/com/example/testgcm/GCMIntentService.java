@@ -13,6 +13,7 @@ import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.chatatainment.game.TicTacToe;
 import com.google.android.gcm.GCMBaseIntentService;
 
 public class GCMIntentService extends GCMBaseIntentService {
@@ -51,6 +52,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 	protected void onMessage(Context context, Intent intent) {
 		Log.d("CHAT_APP", "message received");
 		Bundle bundle = intent.getExtras();
+		if(Message.Types.GAME_MOVE.equals(bundle.getString("msg_type"))){
+			processGameMessage(bundle);
+			return;
+		}
 		Message message = new Message();
 		message.setMsg(bundle.getString("msg"));
 		message.setFrom(bundle.getString("msg_from"));
@@ -108,6 +113,21 @@ public class GCMIntentService extends GCMBaseIntentService {
 		msgIntent.putExtra("msg", (String) bundle.get("msg"));
 		sendBroadcast(msgIntent);
 	}
+	
+	private void processGameMessage(Bundle bundle){
+		
+		TicTacToe.Move move = new TicTacToe.Move();
+		move.setTurn(Integer.parseInt(bundle.getString("msg_turn")));
+		move.setX(Integer.parseInt(bundle.getString("msg_x")));
+		move.setY(Integer.parseInt(bundle.getString("msg_y")));
+		move.setFrom(bundle.getString("msg_from"));
+		move.setTo(bundle.getString("msg_to"));
+		Log.d("CHAT_APP","Game message received : "+move);
+		Intent msgIntent = new Intent();
+		msgIntent.setAction("com.example.testgcm.GameMove");
+		msgIntent.putExtra("move",move);
+		sendBroadcast(msgIntent);
+	}
 
 	@Override
 	protected void onRegistered(Context context, String regId) {
@@ -123,5 +143,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		System.out.println("Unregistered ID: " + regId);
 
 	}
+	
+
 
 }

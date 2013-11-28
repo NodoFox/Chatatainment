@@ -1,5 +1,9 @@
 package com.example.testgcm;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,6 +13,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,6 +33,9 @@ public class GameFragment extends Fragment {
 	private String myNumber = null;
 	private String userNumber = null;
 	private String userName = null;
+	private GameDataSource gameDSForRead = null;
+	private GameDataSource gameDSForWrite = null;
+	
 
 	BroadcastReceiver gameMoveReceiver = new BroadcastReceiver() {
 
@@ -58,6 +66,7 @@ public class GameFragment extends Fragment {
 	@Override
 	public void onPause() {
 		parentActivity.unregisterReceiver(gameMoveReceiver);
+		saveGameStateToDatabase();
 		super.onPause();
 	}
 
@@ -65,7 +74,21 @@ public class GameFragment extends Fragment {
 	public void onResume() {
 		parentActivity.registerReceiver(gameMoveReceiver, new IntentFilter(
 				"com.example.testgcm.GameMove"));
+		loadGameStateFromDatabase();
 		super.onResume();
+	}
+	
+	
+
+	@Override
+	public void onDestroy() {
+		if(gameDSForRead!=null){
+			gameDSForRead.close();
+		}
+		if(gameDSForWrite!=null){
+			gameDSForWrite.close();
+		}
+		super.onDestroy();
 	}
 
 	public String getUserName() {
@@ -126,6 +149,11 @@ public class GameFragment extends Fragment {
 		Bundle bundle = parentActivity.getIntent().getExtras();
 		userName = bundle.getString("userName");
 		userNumber = bundle.getString("userNumber");
+		gameDSForRead = new GameDataSource(parentActivity);
+		gameDSForRead.openForRead();
+		gameDSForWrite = new GameDataSource(parentActivity);
+		gameDSForWrite.open();
+		
 		buttons = new Button[3][3];
 		buttons[0][0] = (Button) fragmentView.findViewById(R.id.button1);
 		buttons[0][1] = (Button) fragmentView.findViewById(R.id.button2);
@@ -138,6 +166,7 @@ public class GameFragment extends Fragment {
 		buttons[2][2] = (Button) fragmentView.findViewById(R.id.button9);
 		resetButton = (Button) fragmentView.findViewById(R.id.resetGameButton);
 		game = new TicTacToe();
+		
 		updateButtonsWithGameState();
 		attachClickHandlers();
 		return fragmentView;
@@ -200,5 +229,54 @@ public class GameFragment extends Fragment {
 
 		}
 	};
+	
+	
+	public void saveGameStateToDatabase(){
+		int[][] state = game.getState();
+		int nextTurn = game.getNextTurn();
+		JSONObject jsonObject = new JSONObject();
+		JSONObject stateObj = new JSONObject();
+		//userNumber
+		try{
+			for(int i=0;i<3;i++){
+				JSONArray arr = new JSONArray();
+				for(int j=0;j<3;j++){
+					arr.put(state[i][j]);
+				}
+				stateObj.put(""+i, arr);
+			}
+			jsonObject.put("state", stateObj);
+			jsonObject.put("nextTurn", nextTurn);
+			Log.d("CHAT_APP",jsonObject.toString());
+		}catch(Exception e){
+			Log.e("CHAT_APP", e.getMessage());
+		}
+		
+		gameDSForWrite.saveGameState(jsonObject, userNumber);
+		
+	}
+	
+	public void loadGameStateFromDatabase(){
+		JSONObject gameState= gameDSForRead.getGameState(userNumber);
+		int state[][] = new int[3][3];
+		if(gameState!=null){
+			try {
+				JSONObject stateObj = gameState.getJSONObject("state");
+				for(int i = 0 ;i <3;i++){
+					JSONArray arr = stateObj.getJSONArray(""+i);
+					for(int j=0;j<3;j++){
+						state[i][j] = arr.getInt(j);
+					}
+				}
+				game.setState(state);
+				game.setNextTurn(gameState.getInt("nextTurn"));
+				Log.d("CHAT_APP",gameState.toString());
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		updateButtonsWithGameState();
+	}
 
 }

@@ -14,7 +14,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 	public static final String COLUMN_STATUS = "status";
 
 	private static final String DATABASE_NAME = "messenger.db";
-	private static final int DATABASE_VERSION = 8;
+	private static final int DATABASE_VERSION = 9;
 
 	// Database creation sql statement
 	private static final String DATABASE_CREATE = "create table " + TABLE_USERS
@@ -23,7 +23,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 			+ " text);";
 
 	private static final String DATABASE_CREATE1 = " CREATE TABLE message (_id integer primary key autoincrement, msg_from text not null, msg_to text not null, timestamp text not null, msg text, sent integer, delivered integer, type text);";
-	
+
+	private static final String GAME_DATABASE_CREATE = "CREATE TABLE games (_id integer primary key autoincrement, user text not null, game_state text not null, my_score integer, user_score integer)";
+
 	public MySQLiteHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
@@ -33,6 +35,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 		database.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
 		database.execSQL(DATABASE_CREATE);
 		database.execSQL(DATABASE_CREATE1);
+		database.execSQL(GAME_DATABASE_CREATE);
 	}
 
 	@Override
@@ -42,6 +45,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 						+ newVersion + ", which will destroy all old data");
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
 		db.execSQL("DROP TABLE IF EXISTS message");
+		db.execSQL("DROP TABLE IF EXISTS games");
 		onCreate(db);
 	}
 

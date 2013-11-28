@@ -96,7 +96,29 @@
             android:id="@+id/resetGameButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reset Game" />
+            android:text="New Game" />
+
+        
+        <TextView
+            android:id="@+id/gameStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Tap on New Game to start a new game"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/nextTurnLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next Turn"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        <TextView
+            android:id="@+id/nextTurn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[next turn]"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
     </TableLayout>
 

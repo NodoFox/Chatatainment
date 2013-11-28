@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.chatatainment.database.GameDataSource;
 import com.chatatainment.database.GameDatabaseOperations;
@@ -164,6 +165,14 @@ public class GameFragment extends Fragment {
 			}
 		}
 		int winner = TicTacToe.STATE_EMPTY;
+		TextView nextTurnView = (TextView)fragmentView.findViewById(R.id.nextTurn);
+		TextView statusMessage = (TextView)fragmentView.findViewById(R.id.gameStatus);
+		nextTurnView.setText(game.getNextTurn()==TicTacToe.STATE_X?"X":"O");
+		if(game.isMyTurn()){
+			statusMessage.setText("You play next");
+		}else{
+			statusMessage.setText("Waiting for "+userName+" to make a move...");
+		}
 		winner = game.getWinner();
 		if (winner != TicTacToe.STATE_EMPTY) {
 			String message = (winner == TicTacToe.STATE_X) ? "X wins!"

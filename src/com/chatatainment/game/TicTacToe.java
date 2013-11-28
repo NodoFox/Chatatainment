@@ -109,7 +109,7 @@ public class TicTacToe {
 	}
 
 	public boolean makeMove(int x, int y) {
-		if (state[x][y] == STATE_EMPTY) {
+		if (state[x][y] == STATE_EMPTY && getWinner()==STATE_EMPTY) {
 			state[x][y] = nextTurn;
 			nextTurn = (nextTurn == STATE_O) ? STATE_X : STATE_O;
 			return true;

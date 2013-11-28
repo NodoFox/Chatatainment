@@ -32,13 +32,41 @@ public class GameFragment extends Fragment {
 	private String userName = null;
 	private GameDataSource gameDSForRead = null;
 	private GameDataSource gameDSForWrite = null;
+	
+	static Boolean isActive = false;
+	
+	
+
+	public static Boolean getIsActive() {
+		return isActive;
+	}
+
+	public static void setIsActive(Boolean isActive) {
+		GameFragment.isActive = isActive;
+	}
+
+	public GameDataSource getGameDSForRead() {
+		return gameDSForRead;
+	}
+
+	public void setGameDSForRead(GameDataSource gameDSForRead) {
+		this.gameDSForRead = gameDSForRead;
+	}
+
+	public GameDataSource getGameDSForWrite() {
+		return gameDSForWrite;
+	}
+
+	public void setGameDSForWrite(GameDataSource gameDSForWrite) {
+		this.gameDSForWrite = gameDSForWrite;
+	}
 
 	BroadcastReceiver gameMoveReceiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			GameDatabaseOperations.loadGameStateFromDatabase(game,
-					userNumber, gameDSForRead);
+			GameDatabaseOperations.loadGameStateFromDatabase(game, userNumber,
+					gameDSForRead);
 			updateButtonsWithGameState();
 		}
 
@@ -46,6 +74,7 @@ public class GameFragment extends Fragment {
 
 	@Override
 	public void onPause() {
+		isActive = false;
 		parentActivity.unregisterReceiver(gameMoveReceiver);
 		GameDatabaseOperations.saveGameStateToDatabase(game, userNumber,
 				gameDSForWrite);
@@ -54,10 +83,11 @@ public class GameFragment extends Fragment {
 
 	@Override
 	public void onResume() {
+		isActive = true;
 		parentActivity.registerReceiver(gameMoveReceiver, new IntentFilter(
 				"com.example.testgcm.GameMove"));
-		GameDatabaseOperations.loadGameStateFromDatabase(game,
-				userNumber, gameDSForRead);
+		GameDatabaseOperations.loadGameStateFromDatabase(game, userNumber,
+				gameDSForRead);
 		updateButtonsWithGameState();
 		super.onResume();
 	}
@@ -148,7 +178,8 @@ public class GameFragment extends Fragment {
 		buttons[2][2] = (Button) fragmentView.findViewById(R.id.button9);
 		resetButton = (Button) fragmentView.findViewById(R.id.resetGameButton);
 		game = new TicTacToe();
-		if(!GameDatabaseOperations.loadGameStateFromDatabase(game, userNumber, gameDSForRead)){
+		if (!GameDatabaseOperations.loadGameStateFromDatabase(game, userNumber,
+				gameDSForRead)) {
 			game.setMyTurn(true);
 		}
 		updateButtonsWithGameState();
@@ -156,7 +187,7 @@ public class GameFragment extends Fragment {
 		return fragmentView;
 	}
 
-	private void updateButtonsWithGameState() {
+	public void updateButtonsWithGameState() {
 		int[][] state = game.getState();
 		for (int i = 0; i < state.length; i++) {
 			for (int j = 0; j < state[i].length; j++) {
@@ -165,13 +196,17 @@ public class GameFragment extends Fragment {
 			}
 		}
 		int winner = TicTacToe.STATE_EMPTY;
-		TextView nextTurnView = (TextView)fragmentView.findViewById(R.id.nextTurn);
-		TextView statusMessage = (TextView)fragmentView.findViewById(R.id.gameStatus);
-		nextTurnView.setText(game.getNextTurn()==TicTacToe.STATE_X?"X":"O");
-		if(game.isMyTurn()){
+		TextView nextTurnView = (TextView) fragmentView
+				.findViewById(R.id.nextTurn);
+		TextView statusMessage = (TextView) fragmentView
+				.findViewById(R.id.gameStatus);
+		nextTurnView.setText(game.getNextTurn() == TicTacToe.STATE_X ? "X"
+				: "O");
+		if (game.isMyTurn()) {
 			statusMessage.setText("You play next");
-		}else{
-			statusMessage.setText("Waiting for "+userName+" to make a move...");
+		} else {
+			statusMessage.setText("Waiting for " + userName
+					+ " to make a move...");
 		}
 		winner = game.getWinner();
 		if (winner != TicTacToe.STATE_EMPTY) {
@@ -194,7 +229,12 @@ public class GameFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				game.resetGame();
-				GameDatabaseOperations.saveGameStateToDatabase(game, userNumber, gameDSForWrite);
+				GameDatabaseOperations.saveGameStateToDatabase(game,
+						userNumber, gameDSForWrite);
+				TicTacToe.Move move = new TicTacToe.Move();
+				move.setTo(userNumber);
+				move.setFrom(myNumber);
+				new NewGameCommandSenderTask().execute(move);
 				updateButtonsWithGameState();
 			}
 		});
@@ -205,7 +245,7 @@ public class GameFragment extends Fragment {
 			Button button = ((Button) v);
 			int x = (Integer) button.getTag() / 3, y = (Integer) button
 					.getTag() % 3;
-			
+
 			if (game.isMyTurn()) {
 				if (game.makeMove(x, y)) {
 					game.setMyTurn(false);
@@ -213,7 +253,8 @@ public class GameFragment extends Fragment {
 					move.setFrom(myNumber);
 					move.setTo(userNumber);
 					new GameMessageSenderTask().execute(move);
-					GameDatabaseOperations.saveGameStateToDatabase(game, userNumber, gameDSForWrite);
+					GameDatabaseOperations.saveGameStateToDatabase(game,
+							userNumber, gameDSForWrite);
 					updateButtonsWithGameState();
 				}
 			} else {

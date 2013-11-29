@@ -22,8 +22,9 @@ public class Utils {
 			"MMMM dd, yyyy");
 
 //	public static String SERVER_URL = "http://192.168.0.30:9090/ChatServer/";
-	public static String SERVER_URL = "http://192.168.0.9:9090/ChatServer/";
+//	public static String SERVER_URL = "http://192.168.0.9:9090/ChatServer/";
 //	public static String SERVER_URL = "http://cs-server.usc.edu:39112/ChatServer/";
+	public static String SERVER_URL = "http://gladonalmeida.in/";
 
 	public static String sendToServer(JSONObject json, String servletName) {
 		StringBuffer sb = new StringBuffer();

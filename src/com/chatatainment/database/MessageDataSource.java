@@ -136,8 +136,8 @@ public class MessageDataSource {
 		cursor.close();
 		return unreadUsers;
 	}
-	public void markAllRead(String me){
-		database.execSQL("UPDATE message SET view='1' WHERE msg_to='"+me+"'");
+	public void markAllRead(String me, String user){
+		database.execSQL("UPDATE message SET view='1' WHERE msg_to='"+me+"' AND msg_from='"+user+"'");
 	}
 
 }

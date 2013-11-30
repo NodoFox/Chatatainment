@@ -35,8 +35,8 @@ public class UserListingAdapter extends ArrayAdapter<User> {
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View rowView = inflater.inflate(R.layout.userrowlayout, parent, false);
-		if(position%2==0)
-			rowView.setBackgroundColor(0xFFfafafa);
+		//if(position%2==0)
+			//rowView.setBackgroundColor(0xFFfafafa);
 		TextView userNameView = (TextView) rowView.findViewById(R.id.username);
 		TextView statusView = (TextView) rowView.findViewById(R.id.status);
 		ImageView imageView = (ImageView) rowView.findViewById(R.id.profilepic);
@@ -44,7 +44,9 @@ public class UserListingAdapter extends ArrayAdapter<User> {
 		userPhoneView.setText(users.get(position).getId());
 		Log.d("UNREAD","----");
 		if(users.get(position).isRead()==false){
-			userNameView.setText(users.get(position).getName()+"Unread");
+			userNameView.setText(users.get(position).getName());
+			rowView.setBackgroundColor(0xFFFEBDA3);
+			
 		}else{
 			userNameView.setText(users.get(position).getName());
 		}

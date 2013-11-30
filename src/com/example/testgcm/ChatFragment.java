@@ -96,7 +96,7 @@ public class ChatFragment extends Fragment {
 			}
 		});
 		dsForRead.open();
-		dsForRead.markAllRead(myNumber);
+		dsForRead.markAllRead(myNumber,userNumber);
 		return fragmentView;
 	}
 

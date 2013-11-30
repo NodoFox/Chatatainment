@@ -54,7 +54,37 @@ public class UserListActivity extends ListActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Log.d("CHAT_APP", "BroadCast Received");
-			adapter.notifyDataSetChanged();			
+			MessageDataSource db = new MessageDataSource(getApplicationContext());
+			db.openForRead();
+			HashMap<String,Integer> unreadUsers = db.getUnviewedMessageMap(myNumber);
+			
+			for (Map.Entry<String, Integer> entry : unreadUsers.entrySet()) {
+			    String key = entry.getKey();
+			    Object value = entry.getValue();
+			    Log.d("UNREAD",key+" : "+value);
+			}
+			datasource.openForRead();
+			
+			List<User> u = datasource.getRegisteredUsers();
+			Log.d("UNREAD","In UserListActivity: unread users: "+unreadUsers.size());
+			for(User each: u){
+				for (Map.Entry<String, Integer> entry : unreadUsers.entrySet()) {
+				    String key = entry.getKey();
+				    Object value = entry.getValue();
+				    //Log.d("UNREAD",key+" : "+value);
+				    if(key.equals(each.getId())){
+						each.setRead(false);
+						Log.d("UNREAD",each.getId() + " set to Unread");
+					}
+				}
+				
+			}
+			//updateRegisteredUsers();
+			adapter.notifyDataSetChanged();	
+			adapter = new UserListingAdapter(UserListActivity.this, u);
+			setListAdapter(adapter);
+			//adapter.notifyDataSetChanged();
+					
 		}
 	};
 	private BroadcastReceiver messageReceived = new BroadcastReceiver() {
@@ -73,16 +103,23 @@ public class UserListActivity extends ListActivity {
 			datasource.openForRead();
 			
 			List<User> u = datasource.getRegisteredUsers();
-			Log.d("UNREAD","In UserListActivity: unread users: "+u.size());
+			Log.d("UNREAD","In UserListActivity: unread users: "+unreadUsers.size());
 			for(User each: u){
-				if(unreadUsers.containsKey(each)){
-					each.setRead(false);
+				for (Map.Entry<String, Integer> entry : unreadUsers.entrySet()) {
+				    String key = entry.getKey();
+				    Object value = entry.getValue();
+				    //Log.d("UNREAD",key+" : "+value);
+				    if(key.equals(each.getId())){
+						each.setRead(false);
+						Log.d("UNREAD",each.getId() + " set to Unread");
+					}
 				}
+				
 			}
 			//updateRegisteredUsers();
-			//adapter = new UserListingAdapter(getApplicationContext(), u);
-			
-			adapter.notifyDataSetChanged();
+			adapter = new UserListingAdapter(UserListActivity.this, u);
+			setListAdapter(adapter);
+			//adapter.notifyDataSetChanged();
 		}
 	};
 

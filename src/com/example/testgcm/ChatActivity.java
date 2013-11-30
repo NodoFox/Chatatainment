@@ -62,6 +62,7 @@ public class ChatActivity extends Activity {
 		userNumber = bundle.getString("userNumber");
 		setTitle(userName);
 		dsForRead.getMessagesForUsers(myNumber, userNumber, messages);
+		dsForRead.getUnviewedMessageMap(myNumber);
 		setContentView(R.layout.chat_layout);
 		Button button = (Button) findViewById(R.id.button1);
 		ListView lView = (ListView) findViewById(R.id.listView1);
@@ -106,6 +107,7 @@ public class ChatActivity extends Activity {
 	}
 
 	void refreshDataSet() {
+		//dsForRead.getUnviewedMessageMap(myNumber);
 		new RefreshListsTask().execute();
 	}
 

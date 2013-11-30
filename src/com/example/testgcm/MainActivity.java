@@ -123,7 +123,7 @@ public class MainActivity extends Activity {
 		protected String doInBackground(JSONObject... params) {
 			JSONObject json = params[0];
 			String result = Utils.sendToServer(json, "RegisterDevice");
-			Log.d("CHAT_APP", result+"");
+			Log.d("CHAT_APP", "In MainActivity: "+result+"");
 			if ("OK".equals(result)) {
 				Editor edit = preferences.edit();
 				edit.putString("userMobNo", mobtext.getText().toString());

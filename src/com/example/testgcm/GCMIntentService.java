@@ -120,6 +120,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		msgIntent.setAction("com.example.testgcm.Message");
 		msgIntent.putExtra("msg", (String) bundle.get("msg"));
 		sendBroadcast(msgIntent);
+		Log.d("CHAT_APP","In GCMIntentService: Message received broadcast sent");
 	}
 
 	private void processGameMessage(Bundle bundle) {

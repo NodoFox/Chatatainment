@@ -10,6 +10,7 @@ import java.util.List;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,15 @@ public class UserListingAdapter extends ArrayAdapter<User> {
 		TextView userNameView = (TextView) rowView.findViewById(R.id.username);
 		TextView statusView = (TextView) rowView.findViewById(R.id.status);
 		ImageView imageView = (ImageView) rowView.findViewById(R.id.profilepic);
-		userNameView.setText(users.get(position).getName());
+		TextView userPhoneView = (TextView) rowView.findViewById(R.id.userPhone);
+		userPhoneView.setText(users.get(position).getId());
+		Log.d("UNREAD","----");
+		if(users.get(position).isRead()==false){
+			userNameView.setText(users.get(position).getName()+"Unread");
+		}else{
+			userNameView.setText(users.get(position).getName());
+		}
+		
 		statusView.setText(users.get(position).getStatus());
 		BitmapFactory.Options bmOptions;
 		bmOptions = new BitmapFactory.Options();

@@ -1,11 +1,15 @@
 package com.example.testgcm;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.chatatainment.database.MessageDataSource;
 import com.chatatainment.database.UsersDataSource;
 
 import android.app.ListActivity;
@@ -39,16 +43,45 @@ public class UserListActivity extends ListActivity {
 	private UserListingAdapter adapter;
 	private List<User> usersToDisplay;
 	private ListView listView;
+	private String myNumber;
 	Context context;
 
 	public UserListActivity() {
 		context = this;
 	}
-
+	
 	private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Log.d("CHAT_APP", "BroadCast Received");
+			adapter.notifyDataSetChanged();			
+		}
+	};
+	private BroadcastReceiver messageReceived = new BroadcastReceiver() {
+		
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			MessageDataSource db = new MessageDataSource(getApplicationContext());
+			db.openForRead();
+			HashMap<String,Integer> unreadUsers = db.getUnviewedMessageMap(myNumber);
+			
+			for (Map.Entry<String, Integer> entry : unreadUsers.entrySet()) {
+			    String key = entry.getKey();
+			    Object value = entry.getValue();
+			    Log.d("UNREAD",key+" : "+value);
+			}
+			datasource.openForRead();
+			
+			List<User> u = datasource.getRegisteredUsers();
+			Log.d("UNREAD","In UserListActivity: unread users: "+u.size());
+			for(User each: u){
+				if(unreadUsers.containsKey(each)){
+					each.setRead(false);
+				}
+			}
+			//updateRegisteredUsers();
+			//adapter = new UserListingAdapter(getApplicationContext(), u);
+			
 			adapter.notifyDataSetChanged();
 		}
 	};
@@ -57,7 +90,7 @@ public class UserListActivity extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		String myNumber = preferences.getString("userMobNo", null);
+		myNumber = preferences.getString("userMobNo", null);
 		if (myNumber == null) {
 			Intent intent = new Intent(this, MainActivity.class);
 			intent.putExtra("reg", true);
@@ -119,6 +152,7 @@ public class UserListActivity extends ListActivity {
 	protected void onResume() {
 		registerReceiver(mMessageReceiver, new IntentFilter(
 				"com.chat.contactsRefreshEvent"));
+		registerReceiver(messageReceived, new IntentFilter("com.example.testgcm.Message"));
 		new RefreshRegisteredUsersTask().execute();
 		super.onResume();
 	}
@@ -175,7 +209,8 @@ public class UserListActivity extends ListActivity {
 						continue;
 					case Phone.TYPE_MOBILE:
 						if (number.startsWith("+")) {
-							phone = number;
+							phone = number.replace(" ", "");
+							phone = phone.replace("-", "");
 							isAdd = true;
 						} else {
 							continue;
@@ -311,5 +346,7 @@ public class UserListActivity extends ListActivity {
 			sendBroadcast(in);
 			return null;
 		}
+		
+		
 	}
 }

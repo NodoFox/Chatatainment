@@ -22,7 +22,7 @@ public class Utils {
 			"MMMM dd, yyyy");
 
 //	public static String SERVER_URL = "http://192.168.0.30:9090/ChatServer/";
-	public static String SERVER_URL = "http://192.168.0.9:9090/ChatServer/";
+	public static String SERVER_URL = "http://gladonalmeida.in/";
 //	public static String SERVER_URL = "http://cs-server.usc.edu:39112/ChatServer/";
 
 	public static String sendToServer(JSONObject json, String servletName) {
@@ -40,7 +40,8 @@ public class Utils {
 				sb.append(line);
 			}
 		} catch (Exception e) {
-			Log.e("CHAT_APP", "sendToServer - Error in connecting to server");
+			Log.e("CHAT_APP", "in Utils.java sendToServer - Error in connecting to server");
+			e.printStackTrace();
 			return null;
 		}
 		return sb.toString();

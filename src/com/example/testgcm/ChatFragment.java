@@ -33,6 +33,7 @@ public class ChatFragment extends Fragment {
 	private List<Message> messages;
 	private MessageAdapter adapter;
 	static Boolean isActive = false;
+	
 	MessageDataSource dsForRead = null;
 	MessageDataSource ds = null;
 	Activity parentActivity = null;
@@ -94,7 +95,8 @@ public class ChatFragment extends Fragment {
 				new SendMessageTask().execute(msg2Send);
 			}
 		});
-
+		dsForRead.open();
+		dsForRead.markAllRead(myNumber);
 		return fragmentView;
 	}
 
@@ -116,6 +118,7 @@ public class ChatFragment extends Fragment {
 	public String getUserNumber() {
 		return userNumber;
 	}
+	
 
 	public void setUserNumber(String userNumber) {
 		this.userNumber = userNumber;
@@ -129,6 +132,7 @@ public class ChatFragment extends Fragment {
 	}
 
 	void refreshDataSet() {
+		//dsForRead.getUnviewedMessageMap(myNumber);
 		new RefreshListsTask().execute();
 	}
 	
@@ -231,6 +235,7 @@ public class ChatFragment extends Fragment {
 		ChatFragment.isActive = isActive;
 	}
 
+	
 	public ChatFragment() {
 		messages = new ArrayList<Message>();
 	}

@@ -2,8 +2,10 @@ package com.chatatainment.database;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 
+import com.example.testgcm.ChatFragment;
 import com.example.testgcm.Message;
 
 import android.content.ContentValues;
@@ -11,6 +13,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class MessageDataSource {
 	private SQLiteDatabase database;
@@ -59,6 +62,15 @@ public class MessageDataSource {
 		values.put("msg_from", message.getFrom());
 		values.put("msg_to", message.getTo());
 		values.put("msg", message.getMsg());
+		ChatFragment currentChat = new ChatFragment();
+		if(!ChatFragment.getIsActive()){
+			values.put("view", 0);
+		}else {
+			if(false)//!currentChat.getUserNumber().equals(message.getFrom()))
+				values.put("view", 0);
+			else
+				values.put("view", 1);
+		}
 		values.put("sent", message.getSent() == true ? 1 : 0);
 		values.put("delivered", message.getDelivered() == true ? 1 : 0);
 		values.put("timestamp",
@@ -102,7 +114,30 @@ public class MessageDataSource {
 		}
 		// Make sure to close the cursor
 		cursor.close();
+		//getUnviewedMessageMap(me);
 		return list;
+	}
+	
+	public HashMap<String,Integer> getUnviewedMessageMap(String me){
+		this.openForRead();
+		Log.d("UNDREAD","Inside method for Number: "+me);
+		HashMap<String,Integer> unreadUsers = new HashMap<String, Integer>();
+		//Cursor cursor = database.query("message", new String[]{"msg_from","?"}, where,null, groupBy,null, null);
+		Cursor cursor = database.rawQuery("SELECT msg_from, count(*) from message where msg_to='"+me+"' AND view='0' group by msg_to ", null);
+		Log.d("UNDREAD",cursor.getCount()+" COUNT");
+		if(cursor.moveToFirst()){
+			do{
+				Log.d("UNREAD",cursor.getString(0));
+				Log.d("UNREAD",cursor.getString(1));
+				unreadUsers.put(cursor.getString(0),cursor.getInt(1));
+				
+			}while(cursor.moveToNext());
+		}
+		cursor.close();
+		return unreadUsers;
+	}
+	public void markAllRead(String me){
+		database.execSQL("UPDATE message SET view='1' WHERE msg_to='"+me+"'");
 	}
 
 }

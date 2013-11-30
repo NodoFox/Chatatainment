@@ -6,6 +6,15 @@ public class User {
 	private String name;
 	private String status;
 	private String pic;
+	private boolean read = true;
+
+	public boolean isRead() {
+		return read;
+	}
+
+	public void setRead(boolean read) {
+		this.read = read;
+	}
 
 	public String getId() {
 		return id;

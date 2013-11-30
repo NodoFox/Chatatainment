@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.Locale;
 
+import com.chatatainment.database.GameDatabaseOperations;
 import com.chatatainment.game.TicTacToe;
 
 import android.app.ActionBar;
@@ -43,6 +44,8 @@ public class ChatFragmentActivity extends FragmentActivity implements
 	ViewPager mViewPager;
 	private ChatFragment chatFragment = null;
 	private GameFragment gameFragment = null;
+	public static final int CHAT_TAB = 0;
+	public static final int GAME_TAB = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +89,8 @@ public class ChatFragmentActivity extends FragmentActivity implements
 					.setTabListener(this));
 		}
 		getOverflowMenu();
+		
+		actionBar.setSelectedNavigationItem(getIntent().getExtras().getInt("tabToSelect"));
 	}
 	
 	
@@ -114,7 +119,7 @@ public class ChatFragmentActivity extends FragmentActivity implements
 	    // Handle item selection
 	    switch (item.getItemId()) {
 	    case R.id.new_game:
-	        Toast.makeText(this, "hello", Toast.LENGTH_LONG).show();
+	        Toast.makeText(this, "New Game Started", Toast.LENGTH_LONG).show();
 	        startNewGame();
 	        return true;
 	    default:
@@ -123,7 +128,11 @@ public class ChatFragmentActivity extends FragmentActivity implements
 	}
 	
 	private void startNewGame(){
-		//TODO check if there is ongoing game
+		TicTacToe ticTacToeGame =  gameFragment.getGame();
+		GameDatabaseOperations.loadGameStateFromDatabase(ticTacToeGame, gameFragment.getUserNumber(), gameFragment.getGameDSForRead());
+		ticTacToeGame.resetGame();
+		GameDatabaseOperations.saveGameStateToDatabase(ticTacToeGame, gameFragment.getUserNumber(), gameFragment.getGameDSForWrite());
+		gameFragment.updateButtonsWithGameState();
 		Message msg2Send = new Message();
 		msg2Send.setFrom(chatFragment.getMyNumber());
 		msg2Send.setTo(chatFragment.getUserNumber());

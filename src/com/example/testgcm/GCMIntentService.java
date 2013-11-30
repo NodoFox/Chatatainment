@@ -64,6 +64,13 @@ public class GCMIntentService extends GCMBaseIntentService {
 			processGameMessage(bundle);
 			return;
 		}
+		if(Message.Types.NEW_GAME.equals(bundle.getString("msg_type"))){
+			processNewGameMessage(bundle);
+			return;
+		}
+		if(Message.Types.NEW_GAME_REQUEST_RECEIVE.equals(bundle.getString("msg_type"))){
+			processNewGameMessage(bundle);
+		}
 		Message message = new Message();
 		message.setMsg(bundle.getString("msg"));
 		message.setFrom(bundle.getString("msg_from"));
@@ -99,7 +106,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		vibrator.vibrate(ChatFragment.getIsActive() ? 100 : 1000);
 		if (soundLoaded) {
 			soundPool.play(soundId, 0.1f, 0.1f, 1, 0, 1f);
-			Log.e("Test", "Played sound");
+			Log.d("CHAT_APP", "Played sound");
 		}
 		if (!ChatFragment.getIsActive()) {
 			Intent resultIntent = new Intent(this, ChatFragmentActivity.class);
@@ -140,6 +147,57 @@ public class GCMIntentService extends GCMBaseIntentService {
 		msgIntent.setAction("com.example.testgcm.GameMove");
 		msgIntent.putExtra("move", move);
 		sendBroadcast(msgIntent);
+		
+		
+		sendNotificationForGameMessage(bundle, move, "has made a move.");
+	}
+	
+	private void processNewGameMessage(Bundle bundle) {
+		TicTacToe.Move move = new TicTacToe.Move();
+		move.setFrom(bundle.getString("msg_from"));
+		move.setTo(bundle.getString("msg_to"));
+		Log.d("CHAT_APP", "New Game message received : " + move);
+		TicTacToe ticTacToeGame = new TicTacToe();
+		GameDatabaseOperations.loadGameStateFromDatabase(ticTacToeGame, move.getFrom(), gdsForWrite);
+		ticTacToeGame.resetGame();
+		GameDatabaseOperations.saveGameStateToDatabase(ticTacToeGame, move.getFrom(), gdsForWrite);
+		Intent msgIntent = new Intent();
+		msgIntent.setAction("com.example.testgcm.GameMove");
+		msgIntent.putExtra("move", move);
+		sendBroadcast(msgIntent);
+		
+		sendNotificationForGameMessage(bundle, move, "has started a new Game with you.");
+	}
+	
+	private void sendNotificationForGameMessage(Bundle bundle, TicTacToe.Move move, String message){
+		//For notification
+		Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		vibrator.vibrate(ChatFragment.getIsActive() ? 100 : 1000);
+		UsersDataSource uds = new UsersDataSource(this);
+		String userNumber = bundle.getString("msg_from");
+		uds.open();
+		String userName = uds.getUserNameForMobileNumber(userNumber);
+		uds.close();
+		if (soundLoaded) {
+			soundPool.play(soundId, 0.1f, 0.1f, 1, 0, 1f);
+			Log.d("CHAT_APP", "Played sound");
+		}
+		if (!GameFragment.getIsActive()) {
+			Intent resultIntent = new Intent(this, ChatFragmentActivity.class);
+			resultIntent.putExtra("userNumber", move.getFrom());
+			resultIntent.putExtra("userName", userName);
+			resultIntent.putExtra("msg", userName +" "+ message);
+			resultIntent.putExtra("tabToSelect", ChatFragmentActivity.GAME_TAB);
+			PendingIntent pIntent = PendingIntent.getActivity(this, 0,
+					resultIntent, 0);
+			Notification noti = new NotificationCompat.Builder(this)
+					.setContentText(userName +" "+ message)
+					.setContentTitle(userName).setContentIntent(pIntent)
+					.setSmallIcon(R.drawable.ic_launcher).build();
+			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			noti.flags |= Notification.FLAG_AUTO_CANCEL;
+			mNotificationManager.notify(userNumber, 0, noti);
+		}
 	}
 
 	@Override

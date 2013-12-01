@@ -3,6 +3,8 @@ package com.example.testgcm;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -10,6 +12,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
+
 import android.annotation.SuppressLint;
 import android.util.Log;
 
@@ -21,11 +24,16 @@ public class Utils {
 	public static final SimpleDateFormat dateForChat = new SimpleDateFormat(
 			"MMMM dd, yyyy");
 
-//	public static String SERVER_URL = "http://192.168.0.30:9090/ChatServer/";
+	static {
+		dateFormatISO8601.setTimeZone(TimeZone.getTimeZone(TimeZone
+				.getDefault().getDisplayName(true, TimeZone.SHORT)));
+	}
+	// public static String SERVER_URL = "http://192.168.0.30:9090/ChatServer/";
 
-//	public static String SERVER_URL = "http://192.168.0.9:9090/ChatServer/";
+	// public static String SERVER_URL = "http://192.168.0.9:9090/ChatServer/";
 
-//	public static String SERVER_URL = "http://cs-server.usc.edu:39112/ChatServer/";
+	// public static String SERVER_URL =
+	// "http://cs-server.usc.edu:39112/ChatServer/";
 	public static String SERVER_URL = "http://gladonalmeida.in/";
 
 	public static String sendToServer(JSONObject json, String servletName) {
@@ -43,7 +51,8 @@ public class Utils {
 				sb.append(line);
 			}
 		} catch (Exception e) {
-			Log.e("CHAT_APP", "in Utils.java sendToServer - Error in connecting to server");
+			Log.e("CHAT_APP",
+					"in Utils.java sendToServer - Error in connecting to server");
 			e.printStackTrace();
 			return null;
 		}

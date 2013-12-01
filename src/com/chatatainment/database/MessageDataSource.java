@@ -123,12 +123,11 @@ public class MessageDataSource {
 		Log.d("UNDREAD","Inside method for Number: "+me);
 		HashMap<String,Integer> unreadUsers = new HashMap<String, Integer>();
 		//Cursor cursor = database.query("message", new String[]{"msg_from","?"}, where,null, groupBy,null, null);
-		Cursor cursor = database.rawQuery("SELECT msg_from, count(*) from message where msg_to='"+me+"' AND view='0' group by msg_to ", null);
+		Cursor cursor = database.rawQuery("SELECT msg_from, count(*),timestamp from message where msg_to='"+me+"' AND view='0' group by msg_to", null);
 		Log.d("UNDREAD",cursor.getCount()+" COUNT");
 		if(cursor.moveToFirst()){
-			do{
-				Log.d("UNREAD",cursor.getString(0));
-				Log.d("UNREAD",cursor.getString(1));
+			do{		
+				//Log.d("UNREAD",cursor.getString(2)+"====");
 				unreadUsers.put(cursor.getString(0),cursor.getInt(1));
 				
 			}while(cursor.moveToNext());

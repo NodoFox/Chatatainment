@@ -8,7 +8,12 @@ import com.chatatainment.database.GameDatabaseOperations;
 import com.chatatainment.game.TicTacToe;
 
 import android.app.ActionBar;
+import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -46,6 +51,7 @@ public class ChatFragmentActivity extends FragmentActivity implements
 	private GameFragment gameFragment = null;
 	public static final int CHAT_TAB = 0;
 	public static final int GAME_TAB = 1;
+	public static ActionBar globalActionBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +62,9 @@ public class ChatFragmentActivity extends FragmentActivity implements
 		
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
+		globalActionBar = actionBar;
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
+		
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
@@ -91,9 +98,28 @@ public class ChatFragmentActivity extends FragmentActivity implements
 		getOverflowMenu();
 		
 		actionBar.setSelectedNavigationItem(getIntent().getExtras().getInt("tabToSelect"));
+		
+		
 	}
 	
+	BroadcastReceiver gameMoveReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			
+			/*Tab tab = getActionBar().getSelectedTab();
+			if(tab.getPosition()==ChatFragmentActivity.CHAT_TAB){
+				getActionBar().getTabAt(1).setText("Game *");
+			}*/
+		}
+
+	};
 	
+	@Override
+	public void onResume(){
+		this.registerReceiver(gameMoveReceiver, new IntentFilter(
+				"com.example.testgcm.GameMove"));
+		super.onResume();
+	}
 	private void getOverflowMenu() {
 	     try {
 	        ViewConfiguration config = ViewConfiguration.get(this);
@@ -150,16 +176,22 @@ public class ChatFragmentActivity extends FragmentActivity implements
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
+		/*if(tab.getPosition()==ChatFragmentActivity.GAME_TAB){
+			tab.setText(mSectionsPagerAdapter.getPageTitle(tab.getPosition()));
+		}*/
+		
 	}
 
 	@Override
 	public void onTabUnselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
+		
 	}
 
 	@Override
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
+		
 	}
 
 	/**

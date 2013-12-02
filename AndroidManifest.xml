@@ -75,7 +75,8 @@
         </activity>
         <activity
             android:name="com.example.testgcm.ChatFragmentActivity"
-            android:label="@string/title_activity_chat_fragment" >
+            android:label="@string/title_activity_chat_fragment" 
+            android:parentActivityName="com.example.testgcm.UserListActivity" >
         </activity>
     </application>
 

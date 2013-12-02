@@ -4,11 +4,7 @@ import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.Locale;
 
-import com.chatatainment.database.GameDatabaseOperations;
-import com.chatatainment.game.TicTacToe;
-
 import android.app.ActionBar;
-import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,6 +26,9 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.chatatainment.database.GameDatabaseOperations;
+import com.chatatainment.game.TicTacToe;
 
 public class ChatFragmentActivity extends FragmentActivity implements
 		ActionBar.TabListener {
@@ -98,7 +98,8 @@ public class ChatFragmentActivity extends FragmentActivity implements
 		getOverflowMenu();
 		
 		actionBar.setSelectedNavigationItem(getIntent().getExtras().getInt("tabToSelect"));
-		
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+
 		
 	}
 	
@@ -148,6 +149,10 @@ public class ChatFragmentActivity extends FragmentActivity implements
 	        Toast.makeText(this, "New Game Started", Toast.LENGTH_LONG).show();
 	        startNewGame();
 	        return true;
+	    case android.R.id.home:
+	        NavUtils.navigateUpFromSameTask(this);
+	        return true;
+
 	    default:
 	        return super.onOptionsItemSelected(item);
 	    }

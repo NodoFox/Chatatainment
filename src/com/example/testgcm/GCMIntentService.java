@@ -118,7 +118,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 			Notification noti = new NotificationCompat.Builder(this)
 					.setContentText((String) bundle.get("msg"))
 					.setContentTitle(userName).setContentIntent(pIntent)
-					.setSmallIcon(R.drawable.ic_launcher).build();
+					.setSmallIcon(R.drawable.ic_launcher1).build();
 			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 			noti.flags |= Notification.FLAG_AUTO_CANCEL;
 			mNotificationManager.notify(userNumber, 0, noti);
@@ -193,7 +193,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 			Notification noti = new NotificationCompat.Builder(this)
 					.setContentText(userName +" "+ message)
 					.setContentTitle(userName).setContentIntent(pIntent)
-					.setSmallIcon(R.drawable.ic_launcher).build();
+					.setSmallIcon(R.drawable.ic_launcher1).build();
 			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 			noti.flags |= Notification.FLAG_AUTO_CANCEL;
 			mNotificationManager.notify(userNumber, 0, noti);

@@ -42,13 +42,13 @@ public class TicTacToe {
 	}
 
 	public int getWinner() {
-		if (checkIfGameDraw()) {
-			return STATE_GAME_DRAW;
-		}
+		
 		if (checkIfPlayerWins(STATE_X)) {
 			return STATE_X;
 		} else if (checkIfPlayerWins(STATE_O)) {
 			return STATE_O;
+		}else if (checkIfGameDraw()) {
+			return STATE_GAME_DRAW;
 		} else {
 			return STATE_EMPTY;
 		}

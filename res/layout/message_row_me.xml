@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:layout_marginLeft="30dp"
-        android:background="@drawable/bubble_me"
+        android:background="@drawable/speechme"
         android:orientation="vertical"
         android:layout_marginRight="8sp">
 

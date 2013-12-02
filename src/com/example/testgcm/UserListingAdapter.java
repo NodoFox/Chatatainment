@@ -45,7 +45,7 @@ public class UserListingAdapter extends ArrayAdapter<User> {
 		Log.d("UNREAD","----");
 		if(users.get(position).isRead()==false){
 			userNameView.setText(users.get(position).getName());
-			rowView.setBackgroundColor(0xFFFEBDA3);
+			rowView.setBackgroundColor(0xFFE2D673);
 			
 		}else{
 			userNameView.setText(users.get(position).getName());
@@ -56,7 +56,7 @@ public class UserListingAdapter extends ArrayAdapter<User> {
 		bmOptions = new BitmapFactory.Options();
 		bmOptions.inSampleSize = 1;
 		Bitmap bm = LoadImage(users.get(position).getPic(), bmOptions);
-		imageView.setBackgroundResource(R.drawable.ic_launcher);
+		imageView.setBackgroundResource(R.drawable.ic_launcher1);
 		return rowView;
 	}
 

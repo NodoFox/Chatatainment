@@ -214,8 +214,8 @@ public class GameFragment extends Fragment {
 		if (winner != TicTacToe.STATE_EMPTY) {
 			String message = (winner == TicTacToe.STATE_X) ? "X wins!"
 					: (winner == TicTacToe.STATE_O) ? "O Wins" : "Game draw";
-			Toast.makeText(parentActivity.getApplicationContext(), message,
-					Toast.LENGTH_LONG).show();
+			//Toast.makeText(getActivity(), message,Toast.LENGTH_LONG).show();
+			statusMessage.setText(message);
 		}
 	}
 

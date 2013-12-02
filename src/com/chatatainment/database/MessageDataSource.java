@@ -118,22 +118,38 @@ public class MessageDataSource {
 		return list;
 	}
 	
-	public HashMap<String,Integer> getUnviewedMessageMap(String me){
+	public HashMap<String,String> getUnviewedMessageMap(String me){
 		this.openForRead();
 		Log.d("UNDREAD","Inside method for Number: "+me);
-		HashMap<String,Integer> unreadUsers = new HashMap<String, Integer>();
+		HashMap<String,String> unreadUsers = new HashMap<String, String>();
 		//Cursor cursor = database.query("message", new String[]{"msg_from","?"}, where,null, groupBy,null, null);
-		Cursor cursor = database.rawQuery("SELECT msg_from, count(*),timestamp from message where msg_to='"+me+"' AND view='0' group by msg_to", null);
+		Cursor cursor = database.rawQuery("SELECT msg_from, count(*),timestamp from message where msg_to='"+me+"' AND view='0' group by msg_from order by timestamp desc", null);
 		Log.d("UNDREAD",cursor.getCount()+" COUNT");
 		if(cursor.moveToFirst()){
 			do{		
-				//Log.d("UNREAD",cursor.getString(2)+"====");
-				unreadUsers.put(cursor.getString(0),cursor.getInt(1));
+				Log.d("UNREAD",cursor.getString(2)+"====");
+				unreadUsers.put(cursor.getString(0),cursor.getString(2));
 				
 			}while(cursor.moveToNext());
 		}
 		cursor.close();
 		return unreadUsers;
+	}
+	
+	public HashMap<String,String> getMaxTimeStampsForAllUsers(String me){
+		HashMap<String,String> maxTimeStamps = new HashMap<String, String>();
+		//Cursor cursor = database.query("message", new String[]{"msg_from","?"}, where,null, groupBy,null, null);
+		Cursor cursor = database.rawQuery("SELECT msg_from, count(*),timestamp from message where msg_to='"+me+"' group by msg_from order by timestamp desc", null);
+		
+		if(cursor.moveToFirst()){
+			do{		
+				Log.d("User Number",cursor.getString(1)+"==+==");
+				maxTimeStamps.put(cursor.getString(0),cursor.getString(2));
+				
+			}while(cursor.moveToNext());
+		}
+		cursor.close();
+		return maxTimeStamps;
 	}
 	public void markAllRead(String me, String user){
 		database.execSQL("UPDATE message SET view='1' WHERE msg_to='"+me+"' AND msg_from='"+user+"'");

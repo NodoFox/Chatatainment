@@ -32,6 +32,15 @@ public class User  {
 	private String status;
 	private String pic;
 	private boolean read = true;
+	private String maxTimeStamp = null;
+
+	public String getMaxTimeStamp() {
+		return maxTimeStamp;
+	}
+
+	public void setMaxTimeStamp(String maxTimeStamp) {
+		this.maxTimeStamp = maxTimeStamp;
+	}
 
 	public boolean isRead() {
 		return read;
@@ -73,5 +82,8 @@ public class User  {
 		this.pic = pic;
 	}
 
+	public String toString(){
+		return this.id;
+	}
 
 }

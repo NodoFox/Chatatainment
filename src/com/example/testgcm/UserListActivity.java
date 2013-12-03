@@ -287,6 +287,7 @@ public class UserListActivity extends ListActivity {
 	@Override
 	protected void onPause() {
 		unregisterReceiver(mMessageReceiver);
+		unregisterReceiver(messageReceived);
 		super.onPause();
 	}
 

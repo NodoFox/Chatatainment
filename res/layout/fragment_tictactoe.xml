@@ -106,7 +106,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Tap on New Game to start a new game"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:layout_marginTop="10dp"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
             android:id="@+id/nextTurnLabel"

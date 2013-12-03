@@ -109,7 +109,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 			Log.d("CHAT_APP", "Played sound");
 		}
 		if (!ChatFragment.getIsActive()) {
-			Intent resultIntent = new Intent(this, UserListActivity.class);
+			Intent resultIntent = new Intent(this, ChatFragmentActivity.class);
 			resultIntent.putExtra("userNumber", userNumber);
 			resultIntent.putExtra("userName", userName);
 			resultIntent.putExtra("msg", message);

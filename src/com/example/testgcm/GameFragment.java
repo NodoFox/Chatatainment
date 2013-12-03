@@ -218,11 +218,12 @@ public class GameFragment extends Fragment {
 		String nextTurn = game.getNextTurn() == TicTacToe.STATE_X ? "X"	: "O";
 		nextTurnView.setText("");
 		if (game.isMyTurn()) {
-			statusMessage.setText("Your("+nextTurn+") turn to play");
+			statusMessage.setText("Your("+nextTurn+") turn");
 			ChatFragmentActivity.globalActionBar.getTabAt(1).setText("Game *");
 		} else {
-			statusMessage.setText("Waiting for " + userName
-					+ " to make a move...");
+			
+			statusMessage.setText("" + userName
+					+ "'s turn");
 			ChatFragmentActivity.globalActionBar.getTabAt(1).setText("Game");
 		}
 		winner = game.getWinner();

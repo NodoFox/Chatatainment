@@ -29,7 +29,7 @@ public class User  {
 
 	private String id;
 	private String name;
-	private String status;
+	private String status=null;
 	private String pic;
 	private boolean read = true;
 	private String maxTimeStamp = null;

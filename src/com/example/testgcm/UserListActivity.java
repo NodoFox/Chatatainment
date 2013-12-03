@@ -59,37 +59,49 @@ public class UserListActivity extends ListActivity {
 			Log.d("CHAT_APP", "BroadCast Received");
 			MessageDataSource db = new MessageDataSource(getApplicationContext());
 			db.openForRead();
-			HashMap<String,String> unreadUsers = db.getUnviewedMessageMap(myNumber);
+			HashMap<String,String[]> unreadUsers = db.getUnviewedMessageMap(myNumber);
 			HashMap<String,String> allUsers = db.getMaxTimeStampsForAllUsers(myNumber);
 		
 			datasource.openForRead();
 			
 			List<User> u = datasource.getRegisteredUsers();
 			Log.d("UNREAD","In UserListActivity: current registered user size: "+u.size());
-			LinkedList<User> orderedList = new LinkedList<User>();
+			
 			//set max time stamps for all users
 			for(User each: u){
 				for (Map.Entry<String, String> entry : allUsers.entrySet()) {
 				    String key = entry.getKey();
 				    String value = entry.getValue();
-				    //Log.d("UNREAD",key+" : "+value);
+				    Log.d("UNREAD","TimeStamps: "+key+" : "+value);
 				    if(key.equals(each.getId())){
 						each.setMaxTimeStamp(value+"");
+						//each.setStatus("("+value[1]+")");
+					}else{
+						if(each.getMaxTimeStamp()==null){
+							each.setMaxTimeStamp("000000000");
+							//each.setStatus("");
+						}
 					}
 				}
 			}
 			
 			// set unread flags
 			for(User each: u){
-				for (Map.Entry<String, String> entry : unreadUsers.entrySet()) {
+				for (Map.Entry<String, String[]> entry : unreadUsers.entrySet()) {
 				    String key = entry.getKey();
-				    String value = entry.getValue();
+				    String value[] = entry.getValue();
 				    //Log.d("UNREAD",key+" : "+value);
 				    if(key.equals(each.getId())){
 						each.setRead(false);
 				    	//each.setMaxTimeStamp(value+"");
+						each.setStatus("("+value[1]+")");
 				    	Log.d("UNREAD",each.getId() + " set to Unread");
+					}else{
+						if(each.getStatus()==null||each.getStatus().equals("")||each.getStatus().equals("registered"))
+							each.setStatus("");
 					}
+				}if(unreadUsers.size()==0){
+					each.setStatus("");
 				}
 				
 			}
@@ -125,7 +137,7 @@ public class UserListActivity extends ListActivity {
 		public void onReceive(Context context, Intent intent) {
 			MessageDataSource db = new MessageDataSource(getApplicationContext());
 			db.openForRead();
-			HashMap<String,String> unreadUsers = db.getUnviewedMessageMap(myNumber);
+			HashMap<String,String[]> unreadUsers = db.getUnviewedMessageMap(myNumber);
 			HashMap<String,String> allUsers = db.getMaxTimeStampsForAllUsers(myNumber);
 			
 			datasource.openForRead();
@@ -142,26 +154,37 @@ public class UserListActivity extends ListActivity {
 				    //Log.d("UNREAD",key+" : "+value);
 				    if(key.equals(each.getId())){
 						each.setMaxTimeStamp(value+"");
+						//each.setStatus("("+value[1]+")");
 						Log.d("UNREAD",each.getMaxTimeStamp()+" set timestamp for"+each.getId());
+					}
+				    else{
+						if(each.getMaxTimeStamp()==null){
+							each.setMaxTimeStamp("000000000");
+							//
+							//each.setStatus("");
+						}
 					}
 				}
 			}
 					
 			for(User each: u){
-				for (Map.Entry<String, String> entry : unreadUsers.entrySet()) {
+				for (Map.Entry<String, String[]> entry : unreadUsers.entrySet()) {
 				    String key = entry.getKey();
-				    String value = entry.getValue();
+				    String value[] = entry.getValue();
 				    //Log.d("UNREAD",key+" : "+value);
 				    if(key.equals(each.getId())){
 						//u.remove(each);
 						
 				    	each.setRead(false);
-				    	each.setMaxTimeStamp(value+"");
+				    	each.setMaxTimeStamp(value[0]+"");
+				    	each.setStatus("("+value[1]+")");
 				    	orderedList.addFirst(each);
 				    	//u.add(each);
 						Log.d("UNREAD",each.getId() + " set to Unread");
 					}else{
-						orderedList.addLast(each);
+						if(each.getStatus()==null||each.getStatus().equals("")||each.getStatus().equals("registered")){
+							each.setStatus("");
+						}
 					}
 				}
 				

@@ -118,17 +118,21 @@ public class MessageDataSource {
 		return list;
 	}
 	
-	public HashMap<String,String> getUnviewedMessageMap(String me){
+	public HashMap<String,String[]> getUnviewedMessageMap(String me){
 		this.openForRead();
 		Log.d("UNDREAD","Inside method for Number: "+me);
-		HashMap<String,String> unreadUsers = new HashMap<String, String>();
+		HashMap<String,String[]> unreadUsers = new HashMap<String, String[]>();
 		//Cursor cursor = database.query("message", new String[]{"msg_from","?"}, where,null, groupBy,null, null);
 		Cursor cursor = database.rawQuery("SELECT msg_from, count(*),timestamp from message where msg_to='"+me+"' AND view='0' group by msg_from order by timestamp desc", null);
 		Log.d("UNDREAD",cursor.getCount()+" COUNT");
+		//String array[] = new String[2];
+		String array[] = new String[2];
 		if(cursor.moveToFirst()){
-			do{		
-				Log.d("UNREAD",cursor.getString(2)+"====");
-				unreadUsers.put(cursor.getString(0),cursor.getString(2));
+			do{	
+				array[0] = cursor.getString(2);
+				array[1] = cursor.getString(1);
+				Log.d("UNREAD","Number "+cursor.getString(0)+ " Timestamps: "+array[0]+" Count: "+array[1]);
+				unreadUsers.put(cursor.getString(0),array);
 				
 			}while(cursor.moveToNext());
 		}
@@ -142,8 +146,9 @@ public class MessageDataSource {
 		Cursor cursor = database.rawQuery("SELECT msg_from, count(*),timestamp from message where msg_to='"+me+"' group by msg_from order by timestamp desc", null);
 		
 		if(cursor.moveToFirst()){
-			do{		
-				Log.d("User Number",cursor.getString(1)+"==+==");
+			do{	
+				
+				Log.d("User Number",cursor.getString(0)+"==+=="+cursor.getString(2));
 				maxTimeStamps.put(cursor.getString(0),cursor.getString(2));
 				
 			}while(cursor.moveToNext());

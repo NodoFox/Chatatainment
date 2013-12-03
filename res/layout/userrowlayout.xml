@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:paddingRight="8dp"
-        android:text="@+id/label"
+        android:text=""
         android:textSize="16sp" >
 
     </TextView>

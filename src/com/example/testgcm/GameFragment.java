@@ -7,12 +7,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -89,6 +92,7 @@ public class GameFragment extends Fragment {
 		GameDatabaseOperations.loadGameStateFromDatabase(game, userNumber,
 				gameDSForRead);
 		updateButtonsWithGameState();
+		
 		super.onResume();
 	}
 
@@ -182,6 +186,17 @@ public class GameFragment extends Fragment {
 				gameDSForRead)) {
 			game.setMyTurn(true);
 		}
+		Activity activity = getActivity();
+		InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+		try
+		{
+		    inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+		    Log.d("HIDEKEY","I'm here");
+		}
+		catch (Exception e)
+		{
+			Log.d("HIDEKEY","Exception");
+		}
 		updateButtonsWithGameState();
 		attachClickHandlers();
 		return fragmentView;
@@ -200,10 +215,10 @@ public class GameFragment extends Fragment {
 				.findViewById(R.id.nextTurn);
 		TextView statusMessage = (TextView) fragmentView
 				.findViewById(R.id.gameStatus);
-		nextTurnView.setText(game.getNextTurn() == TicTacToe.STATE_X ? "X"
-				: "O");
+		String nextTurn = game.getNextTurn() == TicTacToe.STATE_X ? "X"	: "O";
+		nextTurnView.setText("");
 		if (game.isMyTurn()) {
-			statusMessage.setText("You play next");
+			statusMessage.setText("Your("+nextTurn+") turn to play");
 			ChatFragmentActivity.globalActionBar.getTabAt(1).setText("Game *");
 		} else {
 			statusMessage.setText("Waiting for " + userName
@@ -212,10 +227,43 @@ public class GameFragment extends Fragment {
 		}
 		winner = game.getWinner();
 		if (winner != TicTacToe.STATE_EMPTY) {
-			String message = (winner == TicTacToe.STATE_X) ? "X wins!"
-					: (winner == TicTacToe.STATE_O) ? "O Wins" : "Game draw";
+			
+			String message = null;
+			/*if(game.isMyTurn()){
+				message = (winner == game.getNextTurn() && winner == TicTacToe.STATE_X) ? "You win!"
+						: (winner == TicTacToe.STATE_O && !(winner==game.getNextTurn())) ? userName+" Wins" : "Game draw";
+			}else {
+				message = (winner == game.getNextTurn() && winner == TicTacToe.STATE_X) ? "You win!"
+						: (winner == TicTacToe.STATE_O && !(winner==game.getNextTurn())) ? userName+" Wins" : "Game draw";
+			}*/
+			Vibrator v =(Vibrator) parentActivity.getSystemService(Context.VIBRATOR_SERVICE);
+			if(winner == TicTacToe.STATE_X){
+				if(!game.isMyTurn()){
+					message = "*****You Win!*****";
+					v.vibrate(GameFragment.getIsActive() ? 1000: 5);
+				}else{
+					message = "You Lose!";
+					v.vibrate(GameFragment.getIsActive() ? 500 : 100);
+				}
+			}else if(winner == TicTacToe.STATE_O){
+				if(!game.isMyTurn()){
+					message="*****You Win!*****";
+					v.vibrate(GameFragment.getIsActive() ? 1000: 5);
+				}else{
+					message="You Lose!";
+					v.vibrate(GameFragment.getIsActive() ? 500 : 100);
+				}
+			}else{
+				message = "Game Draw!";
+				v.vibrate(GameFragment.getIsActive() ? 500 : 100);
+			}
+				
+				
 			//Toast.makeText(getActivity(), message,Toast.LENGTH_LONG).show();
 			statusMessage.setText(message);
+			ChatFragmentActivity.globalActionBar.getTabAt(1).setText("Game");
+			// Vibrate for 500 milliseconds
+			
 		}
 	}
 
@@ -236,6 +284,8 @@ public class GameFragment extends Fragment {
 				TicTacToe.Move move = new TicTacToe.Move();
 				move.setTo(userNumber);
 				move.setFrom(myNumber);
+				Vibrator vb =(Vibrator) parentActivity.getSystemService(Context.VIBRATOR_SERVICE);
+				vb.vibrate(100);
 				new NewGameCommandSenderTask().execute(move);
 				updateButtonsWithGameState();
 			}

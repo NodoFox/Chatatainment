@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -17,6 +18,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +26,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +55,7 @@ public class ChatFragmentActivity extends FragmentActivity implements
 	public static final int CHAT_TAB = 0;
 	public static final int GAME_TAB = 1;
 	public static ActionBar globalActionBar;
+	public Context parentActivity = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +63,7 @@ public class ChatFragmentActivity extends FragmentActivity implements
 		setContentView(R.layout.activity_chat_fragment);
 
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-		
+		parentActivity = getApplicationContext();
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
 		globalActionBar = actionBar;
@@ -181,9 +185,18 @@ public class ChatFragmentActivity extends FragmentActivity implements
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
-		/*if(tab.getPosition()==ChatFragmentActivity.GAME_TAB){
-			tab.setText(mSectionsPagerAdapter.getPageTitle(tab.getPosition()));
-		}*/
+		if(tab.getPosition()==ChatFragmentActivity.GAME_TAB){
+			
+			InputMethodManager inputMethodManager = (InputMethodManager) parentActivity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+			try
+			{
+			    inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
+			}
+			catch (Exception e)
+			{
+
+			}
+		}
 		
 	}
 
